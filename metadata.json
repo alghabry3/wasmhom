@@ -1,0 +1,7 @@
+{
+  "name": "Wasm Home Real Estate",
+  "description": "A high-conversion real estate platform for Wasm Home in Saudi Arabia, featuring smart property advising and investment tools.",
+  "requestFramePermissions": [
+    "geolocation"
+  ]
+}
