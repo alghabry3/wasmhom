@@ -1,16 +1,20 @@
 
 import React, { useState } from 'react';
-import { Filter, Search, Building2, MapPin, Construction, Gem } from 'lucide-react';
-import { MOCK_PROJECTS } from '../constants';
+import { Building2, MapPin, Construction, Gem } from 'lucide-react';
+import { Project } from '../types';
 import ProjectCard from '../components/ProjectCard';
 
-const Projects: React.FC<{ onNavigate: (p: string, id?: string) => void }> = ({ onNavigate }) => {
+interface ProjectsProps {
+  onNavigate: (p: string, id?: string) => void;
+  projects: Project[];
+}
+
+const Projects: React.FC<ProjectsProps> = ({ onNavigate, projects }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'ready' | 'construction' | 'investment'>('all');
 
-  const filtered = MOCK_PROJECTS.filter(p => {
+  const filtered = projects.filter(p => {
     if (activeTab === 'ready') return p.status === 'جاهز';
     if (activeTab === 'construction') return p.status === 'على الخارطة';
-    // Fix: Corrected comparison from 'استثمار' to 'استثماري' to match Project.status type literal
     if (activeTab === 'investment') return p.status === 'استثماري';
     return true;
   });
@@ -19,17 +23,16 @@ const Projects: React.FC<{ onNavigate: (p: string, id?: string) => void }> = ({ 
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-7xl mx-auto px-4">
         <header className="mb-12">
-          <h1 className="text-4xl md:text-5xl font-black mb-4">استكشف مشاريع وسم هوم</h1>
-          <p className="text-gray-500 text-lg">نقدم لكم تشكيلة مختارة من أرقى المشاريع العقارية في المنطقة الشرقية والرياض.</p>
+          <h1 className="text-4xl md:text-5xl font-black mb-4 uppercase tracking-tighter">مشاريع وسم هوم</h1>
+          <p className="text-gray-500 text-lg font-light">استعرض أحدث الفرص العقارية المتاحة في قاعدة بياناتنا المحدثة لحظياً.</p>
         </header>
 
-        {/* Advanced Tabs */}
         <div className="flex flex-wrap gap-4 mb-12 border-b border-gray-200 pb-4">
           {[
             { id: 'all', name: 'الكل', icon: Building2 },
             { id: 'ready', name: 'جاهزة للسكن', icon: MapPin },
-            { id: 'construction', name: 'تحت الإنشاء (وافي)', icon: Construction },
-            { id: 'investment', name: 'فرص استثمارية', icon: Gem },
+            { id: 'construction', name: 'قيد الإنشاء', icon: Construction },
+            { id: 'investment', name: 'استثمارية', icon: Gem },
           ].map(tab => (
             <button 
               key={tab.id}
@@ -42,18 +45,18 @@ const Projects: React.FC<{ onNavigate: (p: string, id?: string) => void }> = ({ 
           ))}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filtered.map(p => (
-            <div key={p.id} className="relative group">
-               {p.status === 'على الخارطة' && (
-                 <div className="absolute top-4 left-4 z-10 bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-black shadow-lg">
-                   نسبة الإنجاز {p.progress}%
-                 </div>
-               )}
-               <ProjectCard project={p} onClick={(id) => onNavigate('projectDetails', id)} />
-            </div>
-          ))}
-        </div>
+        {filtered.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filtered.map(p => (
+              <ProjectCard key={p.id} project={p} onClick={(id) => onNavigate('projectDetails', id)} />
+            ))}
+          </div>
+        ) : (
+          <div className="py-20 text-center bg-white rounded-[3rem] border-2 border-dashed border-gray-200">
+             <Building2 size={64} className="mx-auto text-gray-200 mb-4" />
+             <p className="text-xl font-bold text-gray-400">لا توجد مشاريع تطابق هذا التصنيف حالياً</p>
+          </div>
+        )}
       </div>
     </div>
   );

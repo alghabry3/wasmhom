@@ -6,6 +6,7 @@ export const MOCK_PROJECTS: Project[] = [
     id: 'p1',
     name: 'مجمع وسم السكني 01',
     location: 'حي العزيزية، الخبر',
+    district: 'العزيزية',
     city: 'الخبر',
     priceFrom: 650000,
     type: 'شقة',
@@ -14,17 +15,19 @@ export const MOCK_PROJECTS: Project[] = [
     area: 160,
     developer: 'وسم هوم العقارية',
     image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=800',
-    description: 'مشروع عصري يوفر الرفاهية والأمان لعائلتك في قلب الخبر، مع تشطيبات فاخرة ومرافق متكاملة.',
+    description: 'مشروع عصري في الخبر يوفر وحدات سكنية جاهزة للسكن المباشر مع ضمانات هيكلية وكهربائية شاملة.',
     roiEstimate: 7.5,
+    wafiCertified: false,
     units: [
-      { id: 'u1', projectId: 'p1', unitNumber: '101', type: 'شقة', area: 160, price: 650000, status: 'available', rooms: 3 },
-      { id: 'u2', projectId: 'p1', unitNumber: '102', type: 'شقة', area: 180, price: 720000, status: 'reserved', rooms: 4 }
+      { id: 'u1', projectId: 'p1', unitNumber: '101', type: 'شقة', area: 160, price: 650000, status: 'available', rooms: 3, bathrooms: 2 },
+      { id: 'u2', projectId: 'p1', unitNumber: '102', type: 'شقة', area: 180, price: 720000, status: 'reserved', rooms: 4, bathrooms: 3 }
     ]
   },
   {
     id: 'p2',
-    name: 'فلل وسم نجد (تحت الإنشاء)',
+    name: 'فلل وسم نجد (وافي)',
     location: 'حي النرجس، الرياض',
+    district: 'النرجس',
     city: 'الرياض',
     priceFrom: 2200000,
     type: 'فيلا',
@@ -35,35 +38,47 @@ export const MOCK_PROJECTS: Project[] = [
     developer: 'وسم هوم للتطوير',
     deliveryDate: '2025-12-30',
     image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=800',
-    description: 'فلل سكنية فاخرة بنظام البيع على الخارطة، تتميز بتصاميم نجدية حديثة ومساحات مفتوحة.',
-    roiEstimate: 5.2
+    description: 'مشروع مرخص بنظام البيع على الخارطة (وافي)، يوفر فلل سكنية بتصاميم عصرية ومساحات خضراء خاصة في أرقى أحياء شمال الرياض.',
+    roiEstimate: 5.2,
+    wafiCertified: true,
+    paymentPlans: [
+      { title: 'دفعة أولى 10%', details: '10% عند الحجز، 10% عند اكتمال الهيكل الإنشائي، الباقي عند التسليم' },
+      { title: 'تمويل مرابحة', details: 'متوافق مع جميع البنوك السعودية ببرنامج القرض المدعوم' }
+    ]
+  },
+  {
+    id: 'p3',
+    name: 'برج وسم التجاري',
+    location: 'طريق الملك فهد، الخبر',
+    district: 'البندرية',
+    city: 'الخبر',
+    priceFrom: 1500000,
+    type: 'تجاري',
+    status: 'استثماري',
+    rooms: 0,
+    area: 250,
+    developer: 'وسم هوم العقارية',
+    image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800',
+    description: 'مكاتب تجارية فاخرة وصالات عرض في موقع استراتيجي على طريق الملك فهد بالخبر، مثالي للشركات الراغبة في التوسع.',
+    roiEstimate: 9.2
   }
 ];
 
-// Added MOCK_BLOG_POSTS to fix the export error in Blog.tsx
 export const MOCK_BLOG_POSTS: BlogPost[] = [
   {
     id: 'b1',
-    title: 'كيف تختار منزلك الأول في 2024؟',
-    summary: 'دليل شامل للمقبلين على شراء العقار لأول مرة، نناقش فيه أهم المعايير من الموقع إلى التمويل.',
+    title: 'دليلك الشامل لنظام وافي السعودي',
+    summary: 'تعرف على حقوقك كمشتري في نظام البيع على الخارطة وكيف تضمن تسليم وحدتك في الموعد.',
     category: 'نصائح عقارية',
     date: '2024-05-15',
     image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'b2',
-    title: 'مستقبل العقار في المنطقة الشرقية',
-    summary: 'تحليل معمق للمشاريع الكبرى في الخبر والدمام وأثرها على أسعار الوحدات السكنية.',
-    category: 'أخبار السوق',
-    date: '2024-05-10',
-    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800'
-  },
-  {
-    id: 'b3',
-    title: 'التمويل العقاري المدعوم: كل ما تحتاج معرفته',
-    summary: 'شرح مفصل لبرامج سكني والصندوق العقاري وكيفية الاستفادة منها لتخفيض تكلفة التملك.',
+    title: 'أثر الفائدة على القروض العقارية 2024',
+    summary: 'تحليل لتوقعات الفائدة في البنوك السعودية وأفضل وقت للتقديم على طلب التمويل.',
     category: 'تمويل',
-    date: '2024-05-05',
+    date: '2024-05-10',
     image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=800'
   }
 ];
@@ -71,29 +86,49 @@ export const MOCK_BLOG_POSTS: BlogPost[] = [
 export const FINANCING_SOLUTIONS: FinancingSolution[] = [
   {
     id: 's1',
-    title: 'حلول الدفعة المقدمة',
-    icon: 'Wallet',
-    description: 'توفير حلول سيولة للدفعة المقدمة لتمكينك من حجز عقارك فوراً.',
-    details: ['بدون فوائد إضافية', 'تسهيلات سداد مرنة', 'متوافق مع الشريعة']
+    title: 'القرض العقاري المدعوم',
+    icon: 'Landmark',
+    type: 'mortgage',
+    description: 'تمويل متوافق مع أحكام الشريعة الإسلامية بالتعاون مع صندوق التنمية العقارية وسكني.',
+    details: ['دعم يصل لـ 100% من الأرباح', 'تغطية للمدنيين والعسكريين', 'مدة سداد تصل لـ 25 سنة']
   },
   {
     id: 's2',
-    title: 'حلول التعثر المالي',
+    title: 'حلول الدفعة المقدمة',
+    icon: 'Wallet',
+    type: 'downpayment',
+    description: 'نوفر لك السيولة اللازمة للدفعة الأولى لامتلاك عقارك دون تأخير.',
+    details: ['بدون فوائد إضافية', 'سداد ميسر', 'سرعة الإجراءات']
+  },
+  {
+    id: 's3',
+    title: 'حلول التعثر وإيقاف الخدمات',
     icon: 'ShieldAlert',
-    description: 'معالجة التعثرات وإيقاف الخدمات لتحسين أهليتك الائتمانية لدى البنوك.',
-    details: ['سرية تامة', 'تسوية الديون الخارجية', 'رفع إيقاف الخدمات']
+    type: 'distress',
+    description: 'معالجة المديونيات وتحسين السجل الائتماني (سمة) لتمكينك من الحصول على التمويل.',
+    details: ['تسوية الديون الخارجية', 'رفع إيقاف الخدمات', 'تحسين الأهلية الائتمانية']
+  },
+  {
+    id: 's4',
+    title: 'الدعم السكني (سكني)',
+    icon: 'BadgeCheck',
+    type: 'sakani',
+    description: 'الاستفادة من منتجات سكني المختلفة بما في ذلك الوحدات تحت الإنشاء والبناء الذاتي.',
+    details: ['وحدات وزارة الإسكان', 'دعم الأرباح', 'تسهيلات لمستفيدي الضمان']
   }
 ];
 
 export const FAQ_ITEMS: FaqItem[] = [
-  { category: 'العقارات', question: 'ما هو نظام البيع على الخارطة؟', answer: 'هو بيع وحدات عقارية قبل أو أثناء مرحلة الإنشاء وفق ضوابط وافي.' },
-  { category: 'التمويل', question: 'هل تقبلون الدعم السكني؟', answer: 'نعم، جميع مشاريعنا متوافقة مع برامج الدعم السكني والصندوق العقاري.' }
+  { id: 'f1', category: 'العقارات', question: 'ما هو نظام وافي؟', answer: 'هو نظام البيع على الخارطة الذي يتيح للمطور بيع الوحدات قبل بنائها تحت إشراف وزارة الشؤون البلدية والقروية والإسكان لضمان حقوق المشترين.' },
+  { id: 'f2', category: 'التمويل', question: 'هل يمكنني شراء عقار براتب مدعوم؟', answer: 'نعم، يمكن لمستفيدي برنامج سكني الحصول على قرض مدعوم الأرباح لتمويل شراء الوحدات الجاهزة أو تحت الإنشاء.' },
+  { id: 'f3', category: 'التمويل', question: 'كيف يتم معالجة إيقاف الخدمات؟', answer: 'نقوم بدراسة المديونيات وتسويتها مع الجهات المعنية ثم التنسيق مع البنوك لإعادة جدولتها وطلب تمويل عقاري جديد.' }
 ];
 
 export const COMPANY_INFO = {
   name: 'شركة وسم هوم العقارية',
-  address: 'السعودية، مدينة الخبر، شارع الأمير تركي',
+  address: 'المملكة العربية السعودية، الخبر، طريق الملك فيصل، برج الرامي الدور 4',
   phone: '920017195',
   whatsapp: '966920017195',
-  email: 'info@wasmhome.com'
+  email: 'info@wasmhome.com',
+  license: 'سجل تجاري: 2051234567 | رخصة فال: 1200008899'
 };

@@ -1,9 +1,8 @@
+
 import React, { useState, useMemo } from 'react';
-// Added Award icon to imports
-import { MapPin, Building, Ruler, Calendar, CheckCircle, Info, Calculator, Download, ChevronLeft, Star, Share2, Heart, ShieldCheck, Award } from 'lucide-react';
-import { Project } from '../types';
+import { MapPin, Building, Ruler, Calendar, CheckCircle, Info, Calculator, Download, ChevronLeft, Star, Share2, Heart, ShieldCheck, Award, Construction, FileCheck, Phone, MessageSquare } from 'lucide-react';
+import { Project, Unit } from '../types';
 import { MOCK_PROJECTS } from '../constants';
-// Added Logo component import
 import Logo from '../components/Logo';
 
 interface ProjectDetailsProps {
@@ -13,9 +12,10 @@ interface ProjectDetailsProps {
 
 const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }) => {
   const project = MOCK_PROJECTS.find(p => p.id === projectId);
-  const [loanAmount, setLoanAmount] = useState(650000);
+  const [loanAmount, setLoanAmount] = useState(project?.priceFrom || 650000);
   const [years, setYears] = useState(20);
   const [isLiked, setIsLiked] = useState(false);
+  const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
 
   const monthlyPayment = useMemo(() => {
     const rate = 0.045 / 12;
@@ -59,7 +59,11 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
               <div className="flex flex-wrap gap-2 mb-4">
                  <span className="bg-yellow-400 text-black px-4 py-1.5 rounded-full text-xs font-black shadow-lg">مميز</span>
                  <span className="bg-white text-black px-4 py-1.5 rounded-full text-xs font-black">{project.status}</span>
-                 <span className="bg-white/20 backdrop-blur-md text-white px-4 py-1.5 rounded-full text-xs font-bold border border-white/30">{project.type}</span>
+                 {project.wafiCertified && (
+                   <span className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-xs font-black flex items-center gap-1">
+                      <FileCheck size={14} /> مرخص وافي
+                   </span>
+                 )}
               </div>
               <h1 className="text-4xl md:text-7xl font-black text-white mb-4 leading-tight">{project.name}</h1>
               <div className="flex items-center gap-6 text-gray-300">
@@ -70,7 +74,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
                 <div className="flex items-center gap-1">
                   <Star size={18} className="fill-yellow-400 text-yellow-400" />
                   <span className="font-bold text-white">4.9</span>
-                  <span className="text-sm">(120 تقييم)</span>
                 </div>
               </div>
             </div>
@@ -94,11 +97,30 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
           {/* Main Content Area */}
           <div className="lg:col-span-2 space-y-20">
+            {/* Project Progress for Wafi */}
+            {project.status === 'على الخارطة' && project.progress !== undefined && (
+              <section className="bg-blue-50 p-10 rounded-[2.5rem] border border-blue-100">
+                <div className="flex justify-between items-center mb-6">
+                   <h3 className="text-2xl font-black text-blue-900 flex items-center gap-3">
+                      <Construction /> حالة الإنجاز (وافي)
+                   </h3>
+                   <span className="text-3xl font-black text-blue-600">{project.progress}%</span>
+                </div>
+                <div className="w-full h-4 bg-blue-200 rounded-full overflow-hidden">
+                   <div 
+                     className="h-full bg-blue-600 transition-all duration-1000" 
+                     style={{ width: `${project.progress}%` }}
+                   ></div>
+                </div>
+                <p className="mt-6 text-blue-800 text-sm font-bold">تاريخ التسليم المتوقع: {project.deliveryDate}</p>
+              </section>
+            )}
+
             {/* Quick Stats Grid */}
             <section className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center group hover:bg-black hover:text-white transition-all duration-300">
                  <Ruler size={32} className="text-gray-400 group-hover:text-yellow-400 mb-3" />
-                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">المساحة</span>
+                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">المساحة تبدأ من</span>
                  <span className="font-black text-xl">{project.area} م²</span>
               </div>
               <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center group hover:bg-black hover:text-white transition-all duration-300">
@@ -108,13 +130,13 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
               </div>
               <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center group hover:bg-black hover:text-white transition-all duration-300">
                  <Calendar size={32} className="text-gray-400 group-hover:text-yellow-400 mb-3" />
-                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">التسليم</span>
-                 <span className="font-black text-lg">{project.deliveryDate || 'جاهز'}</span>
+                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">الحالة</span>
+                 <span className="font-black text-lg">{project.status}</span>
               </div>
               <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 flex flex-col items-center text-center group hover:bg-black hover:text-white transition-all duration-300">
                  <ShieldCheck size={32} className="text-gray-400 group-hover:text-yellow-400 mb-3" />
-                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">الضمان</span>
-                 <span className="font-black text-lg">10 سنوات</span>
+                 <span className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">المطور</span>
+                 <span className="font-black text-lg">{project.developer}</span>
               </div>
             </section>
 
@@ -122,34 +144,78 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
             <section>
               <h2 className="text-3xl font-black text-gray-900 mb-8 flex items-center gap-3">
                 <div className="w-2 h-8 bg-black rounded-full"></div>
-                عن المشروع والتصميم
+                عن المشروع
               </h2>
               <div className="prose prose-lg text-gray-600 font-light leading-loose max-w-none">
-                <p>
-                  {project.description} يمثل هذا المشروع نموذجاً فريداً للعمارة السعودية المعاصرة، حيث تم اختيار كل تفصيلة بعناية فائقة لتعكس الرقي والرفاهية. من الواجهات الزجاجية التي تسمح بدخول الضوء الطبيعي، إلى المساحات الخضراء التي تحيط بالمبنى، كل شيء مصمم ليوفر لك بيئة مثالية.
-                </p>
+                <p>{project.description}</p>
                 <p className="mt-4">
-                  يتميز المشروع بموقعه الاستراتيجي الذي يسهل الوصول منه إلى كافة المراكز الحيوية، مع توفير أعلى معايير الخصوصية والأمان لقاطنيه عبر نظام حراسة وكاميرات مراقبة تعمل على مدار الساعة.
+                  تم تصميم هذا المشروع ليتوافق مع تطلعات العائلة السعودية الحديثة، مع التركيز على الخصوصية، استدامة الموارد، واستخدام أفضل الخامات في التشطيبات النهائية.
                 </p>
               </div>
             </section>
 
-            {/* Features List */}
-            <section className="bg-gray-50 p-10 rounded-[2.5rem] border border-gray-100">
-              <h3 className="text-2xl font-black mb-10">المميزات والمرافق</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {[
-                  'تكييف مركزي ذكي', 'مواقف سيارات خاصة', 'نظام سمارت هوم متكامل',
-                  'نادي رياضي رجالي ونسائي', 'منطقة ألعاب للأطفال', 'حراسة وأمن 24/7',
-                  'مصاعد بانورامية', 'إطلالات خلابة'
-                ].map((feature, i) => (
-                  <div key={i} className="flex items-center gap-3 font-bold text-gray-700">
-                    <div className="w-2 h-2 bg-yellow-400 rounded-full"></div>
-                    {feature}
-                  </div>
-                ))}
-              </div>
-            </section>
+            {/* Units Listing */}
+            {project.units && project.units.length > 0 && (
+              <section>
+                <h2 className="text-3xl font-black text-gray-900 mb-8">الوحدات المتوفرة</h2>
+                <div className="overflow-x-auto rounded-[2rem] border border-gray-100 shadow-sm">
+                   <table className="w-full text-right text-sm">
+                      <thead className="bg-gray-50 text-gray-400 font-bold uppercase tracking-wider">
+                         <tr>
+                            <th className="px-6 py-4">رقم الوحدة</th>
+                            <th className="px-6 py-4">النوع</th>
+                            <th className="px-6 py-4">المساحة</th>
+                            <th className="px-6 py-4">الغرف</th>
+                            <th className="px-6 py-4">السعر</th>
+                            <th className="px-6 py-4">الحالة</th>
+                            <th className="px-6 py-4"></th>
+                         </tr>
+                      </thead>
+                      <tbody className="divide-y divide-gray-50">
+                         {project.units.map(unit => (
+                           <tr key={unit.id} className="hover:bg-gray-50 transition-colors">
+                              <td className="px-6 py-4 font-black">{unit.unitNumber}</td>
+                              <td className="px-6 py-4">{unit.type}</td>
+                              <td className="px-6 py-4">{unit.area} م²</td>
+                              <td className="px-6 py-4">{unit.rooms}</td>
+                              <td className="px-6 py-4 font-bold">{unit.price.toLocaleString()} ريال</td>
+                              <td className="px-6 py-4">
+                                <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase ${unit.status === 'available' ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                                  {unit.status === 'available' ? 'متاحة' : 'محجوزة'}
+                                </span>
+                              </td>
+                              <td className="px-6 py-4">
+                                 {unit.status === 'available' && (
+                                   <button 
+                                    onClick={() => setLoanAmount(unit.price)}
+                                    className="text-black font-bold hover:underline"
+                                   >
+                                     احسب التمويل
+                                   </button>
+                                 )}
+                              </td>
+                           </tr>
+                         ))}
+                      </tbody>
+                   </table>
+                </div>
+              </section>
+            )}
+
+            {/* Payment Plans */}
+            {project.paymentPlans && (
+              <section className="bg-gray-900 text-white p-10 rounded-[2.5rem]">
+                <h3 className="text-2xl font-black mb-8">خطط الدفع والتمويل</h3>
+                <div className="grid md:grid-cols-2 gap-8">
+                   {project.paymentPlans.map((plan, i) => (
+                     <div key={i} className="bg-white/5 border border-white/10 p-6 rounded-2xl">
+                        <h4 className="font-black text-yellow-400 mb-2">{plan.title}</h4>
+                        <p className="text-gray-400 text-sm leading-relaxed">{plan.details}</p>
+                     </div>
+                   ))}
+                </div>
+              </section>
+            )}
 
             {/* Financing Calculator */}
             <section id="calculator">
@@ -166,7 +232,7 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
                           <span className="font-black text-black">{loanAmount.toLocaleString()} ريال</span>
                         </div>
                         <input 
-                          type="range" min="100000" max="5000000" step="50000" 
+                          type="range" min="100000" max="10000000" step="50000" 
                           value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))}
                           className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-black"
                         />
@@ -181,9 +247,6 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
                           value={years} onChange={(e) => setYears(Number(e.target.value))}
                           className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-black"
                         />
-                      </div>
-                      <div className="p-4 bg-yellow-50 rounded-2xl border border-yellow-100 text-sm text-yellow-800 font-medium">
-                        * تم احتساب القسط بناءً على هامش ربح تقديري 4.5%. تواصل معنا للحصول على عرض سعر دقيق.
                       </div>
                    </div>
                    <div className="bg-black text-white p-12 rounded-3xl text-center shadow-2xl relative overflow-hidden group">
@@ -206,11 +269,10 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
           <div className="space-y-8">
             <div className="bg-gray-950 text-white rounded-[2.5rem] p-10 shadow-2xl sticky top-28 overflow-hidden">
                <div className="absolute top-0 right-0 p-10 opacity-10 pointer-events-none">
-                 {/* Fixed: Logo component now imported */}
                  <Logo dark={false} className="h-32" />
                </div>
                <div className="relative z-10">
-                 <span className="text-gray-400 block mb-1 font-bold uppercase tracking-widest text-xs">يبدأ السعر من</span>
+                 <span className="text-gray-400 block mb-1 font-bold uppercase tracking-widest text-xs">السعر يبدأ من</span>
                  <div className="text-5xl font-black mb-8 text-yellow-400">
                     {project.priceFrom.toLocaleString()} 
                     <span className="text-lg font-normal text-white mr-2">ريال</span>
@@ -227,22 +289,23 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
                  </div>
 
                  <div className="pt-8 border-t border-white/10 space-y-4">
-                    <p className="text-sm text-gray-400 text-center font-light">هل تحتاج للمساعدة؟</p>
-                    <a 
-                      href={`https://wa.me/966920017195`} 
-                      target="_blank"
-                      className="w-full flex items-center justify-center gap-3 bg-green-500 text-white py-4 rounded-2xl font-black hover:bg-green-600 transition-all"
-                    >
-                      تواصل عبر الواتساب
-                    </a>
+                    <p className="text-sm text-gray-400 text-center font-light">تواصل مباشر مع المستشار</p>
+                    <div className="grid grid-cols-2 gap-4">
+                       <a href="tel:920017195" className="flex flex-col items-center gap-2 p-4 bg-white/5 rounded-2xl hover:bg-white/10 transition-all">
+                          <Phone size={24} />
+                          <span className="text-xs font-bold">اتصال</span>
+                       </a>
+                       <a href="https://wa.me/966920017195" target="_blank" className="flex flex-col items-center gap-2 p-4 bg-green-500/20 text-green-400 rounded-2xl hover:bg-green-500/30 transition-all">
+                          <MessageSquare size={24} />
+                          <span className="text-xs font-bold">واتساب</span>
+                       </a>
+                    </div>
                  </div>
                </div>
             </div>
 
-            {/* Quality Guarantee Card */}
             <div className="bg-white border-2 border-dashed border-gray-100 rounded-[2.5rem] p-8 text-center">
                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                 {/* Fixed: Award icon now imported */}
                  <Award size={32} className="text-black" />
                </div>
                <h4 className="font-black text-lg mb-2">ضمان الجودة الإنشائية</h4>

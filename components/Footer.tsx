@@ -1,7 +1,7 @@
 
 import React from 'react';
 import { COMPANY_INFO } from '../constants';
-import { Facebook, Twitter, Instagram, Linkedin, ArrowLeft } from 'lucide-react';
+import { Facebook, Twitter, Instagram, Linkedin, ArrowLeft, Lock } from 'lucide-react';
 import Logo from './Logo';
 
 interface FooterProps {
@@ -62,11 +62,29 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
               <span className="absolute bottom-[-10px] right-0 w-10 h-1 bg-white"></span>
             </h3>
             <ul className="space-y-4 text-gray-400 text-sm">
-              {['سياسة الخصوصية', 'الشروط والأحكام', 'إخلاء المسؤولية', 'حقوق الملكية'].map((link, idx) => (
+              {[
+                { name: 'سياسة الخصوصية', id: 'privacy' },
+                { name: 'الشروط والأحكام', id: 'terms' },
+                { name: 'الأسئلة الشائعة', id: 'faq' }
+              ].map((link, idx) => (
                 <li key={idx}>
-                  <button className="hover:text-white transition-colors">{link}</button>
+                  <button 
+                    onClick={() => onNavigate(link.id)}
+                    className="hover:text-white transition-colors"
+                  >
+                    {link.name}
+                  </button>
                 </li>
               ))}
+              <li className="pt-4">
+                <button 
+                  onClick={() => onNavigate('admin')}
+                  className="flex items-center gap-2 text-[10px] text-gray-600 hover:text-white transition-colors uppercase tracking-widest font-black"
+                >
+                  <Lock size={12} />
+                  دخول الإدارة
+                </button>
+              </li>
             </ul>
           </div>
 
@@ -96,7 +114,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
         <div className="pt-12 border-t border-white/5 text-center text-gray-500 text-xs flex flex-col md:flex-row justify-between items-center gap-4">
           <p>© {new Date().getFullYear()} شركة وسم هوم العقارية. جميع الحقوق محفوظة.</p>
           <div className="flex gap-6">
-            <span className="hover:text-white cursor-pointer">تصميم وتنفيذ وسم هوم</span>
+            <span className="hover:text-white cursor-pointer">رخصة فال: {COMPANY_INFO.license.split('|')[1]}</span>
           </div>
         </div>
       </div>

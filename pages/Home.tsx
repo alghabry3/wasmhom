@@ -1,21 +1,22 @@
 
 import React, { useState } from 'react';
-import { Search, Compass, ChevronLeft, ShieldCheck, Heart, BarChart3, Users2 } from 'lucide-react';
-import { MOCK_PROJECTS } from '../constants';
+import { Search, Compass, ChevronLeft, ShieldCheck, Heart, BarChart3, Users2, Sparkles } from 'lucide-react';
+import { Project } from '../types';
 import ProjectCard from '../components/ProjectCard';
 
 interface HomeProps {
   onNavigate: (page: string, id?: string) => void;
+  projects: Project[];
 }
 
-const Home: React.FC<HomeProps> = ({ onNavigate }) => {
+const Home: React.FC<HomeProps> = ({ onNavigate, projects }) => {
   const [activeTab, setActiveTab] = useState<'residential' | 'investment' | 'budget'>('residential');
 
-  const filteredProjects = MOCK_PROJECTS.filter(p => {
-    if (activeTab === 'budget') return p.priceFrom < 700000;
-    if (activeTab === 'investment') return (p.roiEstimate || 0) > 6;
+  const filteredProjects = projects.filter(p => {
+    if (activeTab === 'budget') return p.priceFrom < 800000;
+    if (activeTab === 'investment') return (p.roiEstimate || 0) > 6 || p.status === 'استثماري';
     return p.type === 'فيلا' || p.type === 'شقة';
-  });
+  }).slice(0, 3);
 
   return (
     <div className="animate-in fade-in duration-700">
@@ -57,33 +58,31 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
         </div>
       </section>
 
-      {/* Smart Property Quiz (Mini) */}
+      {/* Mini Quiz */}
       <section className="relative z-20 -mt-16 max-w-5xl mx-auto px-4">
         <div className="bg-white rounded-3xl shadow-2xl p-6 md:p-10 border border-gray-100">
           <div className="flex flex-col md:flex-row items-center gap-6">
             <div className="flex-grow grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">الغرض من العقار</label>
-                <select className="w-full bg-gray-50 border-0 rounded-xl p-4 font-bold text-gray-700 focus:ring-2 focus:ring-black">
+                <select className="w-full bg-gray-50 border-0 rounded-xl p-4 font-bold text-gray-700 focus:ring-2 focus:ring-black outline-none">
                   <option>سكن عائلي</option>
                   <option>استثمار طويل الأمد</option>
-                  <option>بيت عطلات</option>
                 </select>
               </div>
               <div className="flex flex-col gap-2">
                 <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">المدينة</label>
-                <select className="w-full bg-gray-50 border-0 rounded-xl p-4 font-bold text-gray-700 focus:ring-2 focus:ring-black">
+                <select className="w-full bg-gray-50 border-0 rounded-xl p-4 font-bold text-gray-700 focus:ring-2 focus:ring-black outline-none">
                   <option>الخبر</option>
                   <option>الرياض</option>
                   <option>الدمام</option>
                 </select>
               </div>
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">الميزانية التقريبية</label>
-                <select className="w-full bg-gray-50 border-0 rounded-xl p-4 font-bold text-gray-700 focus:ring-2 focus:ring-black">
-                  <option>أقل من 700 ألف</option>
-                  <option>700 ألف - 1.2 مليون</option>
-                  <option>أكثر من 1.2 مليون</option>
+                <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">الميزانية</label>
+                <select className="w-full bg-gray-50 border-0 rounded-xl p-4 font-bold text-gray-700 focus:ring-2 focus:ring-black outline-none">
+                  <option>أقل من 800 ألف</option>
+                  <option>أكثر من 800 ألف</option>
                 </select>
               </div>
             </div>
@@ -101,8 +100,8 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       <section className="py-24 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
           <div>
-            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">مشاريعنا المختارة</h2>
-            <p className="text-gray-500 max-w-lg">ننتقي لك أفضل الفرص العقارية التي تجمع بين جودة البناء ومثالية الموقع.</p>
+            <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4 uppercase tracking-tighter">مشاريعنا المميزة</h2>
+            <p className="text-gray-500 max-w-lg font-light">نعرض لكم أحدث ما تم إضافته لقاعدة بياناتنا من فرص عقارية استثنائية.</p>
           </div>
           
           <div className="flex bg-gray-100 p-1.5 rounded-2xl">
@@ -110,19 +109,19 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
               onClick={() => setActiveTab('residential')}
               className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'residential' ? 'bg-white shadow-md text-black' : 'text-gray-500 hover:text-gray-900'}`}
             >
-              الأفضل للسكن
+              للسكن
             </button>
             <button 
               onClick={() => setActiveTab('investment')}
               className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'investment' ? 'bg-white shadow-md text-black' : 'text-gray-500 hover:text-gray-900'}`}
             >
-              الأفضل للاستثمار
+              للاستثمار
             </button>
             <button 
               onClick={() => setActiveTab('budget')}
               className={`px-6 py-2.5 rounded-xl text-sm font-bold transition-all ${activeTab === 'budget' ? 'bg-white shadow-md text-black' : 'text-gray-500 hover:text-gray-900'}`}
             >
-              أقل من 700 ألف
+              أقل من 800 ألف
             </button>
           </div>
         </div>
@@ -151,44 +150,28 @@ const Home: React.FC<HomeProps> = ({ onNavigate }) => {
       {/* Why Wasm Home? */}
       <section className="py-24 bg-gray-900 text-white overflow-hidden relative">
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-48 -mt-48"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -ml-48 -mb-48"></div>
-        
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="text-center mb-20">
-            <h2 className="text-3xl md:text-5xl font-black mb-6">لماذا وسم هوم؟</h2>
-            <p className="text-gray-400 max-w-2xl mx-auto text-lg">نحن لا نبيع عقارات، نحن نبني علاقات مبنية على الثقة والشفافية التامة.</p>
+            <h2 className="text-3xl md:text-5xl font-black mb-6 uppercase tracking-tighter">لماذا وسم هوم؟</h2>
+            <p className="text-gray-400 max-w-2xl mx-auto text-lg font-light">نحن نربط أحلامكم بالواقع من خلال نظام بيانات عقاري متطور وحلول تقنية مبتكرة.</p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 text-center">
             {[
-              { icon: <Compass className="text-yellow-400" size={40} />, title: "استشارة ذكية", desc: "نستخدم الذكاء الاصطناعي لتحليل احتياجاتك وتقديم ترشيحات دقيقة." },
-              { icon: <ShieldCheck className="text-yellow-400" size={40} />, title: "مشاريع موثوقة", desc: "جميع مشاريعنا تمر بفحص دقيق للجودة القانونية والإنشائية." },
-              { icon: <Users2 className="text-yellow-400" size={40} />, title: "دعم حتى الإفراغ", desc: "فريقنا معك في كل خطوة، من الحجز وحتى استلام الصك." },
-              { icon: <BarChart3 className="text-yellow-400" size={40} />, title: "شفافية كاملة", desc: "لا توجد رسوم خفية أو معلومات منقوصة. الوضوح مبدأنا الأول." },
+              { icon: <Compass className="text-yellow-400" size={40} />, title: "بيانات حية", desc: "قاعدة بياناتنا يتم تحديثها لحظياً لتعكس واقع السوق المتغير." },
+              { icon: <ShieldCheck className="text-yellow-400" size={40} />, title: "أمان المشتري", desc: "نضمن لك شفافية كاملة في كافة العقود والإجراءات القانونية." },
+              { icon: <Users2 className="text-yellow-400" size={40} />, title: "إدارة CRM", desc: "نظام متطور لمتابعة طلباتكم وضمان سرعة الاستجابة." },
+              { icon: <BarChart3 className="text-yellow-400" size={40} />, title: "تحليل ROI", desc: "أدوات حسابية دقيقة تساعدكم في اتخاذ القرار الاستثماري الأصوب." },
             ].map((item, idx) => (
               <div key={idx} className="flex flex-col items-center group">
                 <div className="bg-white/10 p-6 rounded-3xl mb-6 group-hover:bg-white/20 transition-colors duration-500">
                   {item.icon}
                 </div>
                 <h3 className="text-xl font-bold mb-3">{item.title}</h3>
-                <p className="text-gray-400 leading-relaxed font-light">{item.desc}</p>
+                <p className="text-gray-400 leading-relaxed font-light text-sm">{item.desc}</p>
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section className="py-32 bg-white text-center">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="text-4xl md:text-6xl font-black text-gray-900 mb-8 leading-tight">جاهز لامتلاك عقار أحلامك؟</h2>
-          <p className="text-xl text-gray-500 mb-12 font-light">مستشارونا العقاريون بانتظارك لتقديم رحلة شراء سهلة وممتعة.</p>
-          <button 
-             onClick={() => onNavigate('contact')}
-             className="bg-black text-white px-12 py-5 rounded-2xl font-black text-xl hover:scale-105 active:scale-95 transition-all shadow-2xl shadow-black/30"
-          >
-            احصل على استشارة مجانية
-          </button>
         </div>
       </section>
     </div>
