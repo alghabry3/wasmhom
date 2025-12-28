@@ -1,9 +1,9 @@
 
-import { Project } from './types';
+import { Project, FaqItem, FinancingSolution, BlogPost } from './types';
 
 export const MOCK_PROJECTS: Project[] = [
   {
-    id: '1',
+    id: 'p1',
     name: 'مجمع وسم السكني 01',
     location: 'حي العزيزية، الخبر',
     city: 'الخبر',
@@ -13,77 +13,81 @@ export const MOCK_PROJECTS: Project[] = [
     rooms: 3,
     area: 160,
     developer: 'وسم هوم العقارية',
-    deliveryDate: '2024-12-01',
     image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?auto=format&fit=crop&q=80&w=800',
     description: 'مشروع عصري يوفر الرفاهية والأمان لعائلتك في قلب الخبر، مع تشطيبات فاخرة ومرافق متكاملة.',
-    roiEstimate: 7.5
+    roiEstimate: 7.5,
+    units: [
+      { id: 'u1', projectId: 'p1', unitNumber: '101', type: 'شقة', area: 160, price: 650000, status: 'available', rooms: 3 },
+      { id: 'u2', projectId: 'p1', unitNumber: '102', type: 'شقة', area: 180, price: 720000, status: 'reserved', rooms: 4 }
+    ]
   },
   {
-    id: '2',
-    name: 'فلل الياقوت',
+    id: 'p2',
+    name: 'فلل وسم نجد (تحت الإنشاء)',
     location: 'حي النرجس، الرياض',
     city: 'الرياض',
-    priceFrom: 1200000,
+    priceFrom: 2200000,
     type: 'فيلا',
     status: 'على الخارطة',
+    progress: 35,
     rooms: 5,
-    area: 350,
-    developer: 'مطور نجد',
-    deliveryDate: '2025-06-30',
+    area: 400,
+    developer: 'وسم هوم للتطوير',
+    deliveryDate: '2025-12-30',
     image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?auto=format&fit=crop&q=80&w=800',
-    description: 'تصميم كلاسيكي حديث مع مساحات واسعة تلبي تطلعات الحياة العصرية للعائلات الكبيرة.',
+    description: 'فلل سكنية فاخرة بنظام البيع على الخارطة، تتميز بتصاميم نجدية حديثة ومساحات مفتوحة.',
     roiEstimate: 5.2
-  },
-  {
-    id: '3',
-    name: 'برج الشاطئ',
-    location: 'كورنيش الدمام',
-    city: 'الدمام',
-    priceFrom: 850000,
-    type: 'شقة',
-    status: 'جاهز',
-    rooms: 2,
-    area: 120,
-    developer: 'الشرقية للتطوير',
-    image: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&q=80&w=800',
-    description: 'إطلالة مباشرة على الخليج العربي وتصاميم فندقية فاخرة تناسب الباحثين عن التميز.',
-    roiEstimate: 8.8
-  },
-  {
-    id: '4',
-    name: 'تاون هاوس الروضة',
-    location: 'حي الروضة، الخبر',
-    city: 'الخبر',
-    priceFrom: 590000,
-    type: 'تاون هاوس',
-    status: 'على الخارطة',
-    rooms: 4,
-    area: 220,
-    developer: 'وسم هوم العقارية',
-    deliveryDate: '2026-01-01',
-    image: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?auto=format&fit=crop&q=80&w=800',
-    description: 'خيار اقتصادي ذكي للعائلات الشابة الباحثة عن الخصوصية والراحة في حي متكامل.',
-    roiEstimate: 6.0
   }
 ];
 
-export const MOCK_BLOG_POSTS = [
+// Added MOCK_BLOG_POSTS to fix the export error in Blog.tsx
+export const MOCK_BLOG_POSTS: BlogPost[] = [
   {
     id: 'b1',
-    title: 'لماذا الاستثمار العقاري في الخبر هو الأفضل حالياً؟',
-    summary: 'نستعرض في هذا المقال أهم العوامل الجاذبة للاستثمار في مدينة الخبر وكيف تطورت البنية التحتية فيها.',
-    category: 'استثمار',
+    title: 'كيف تختار منزلك الأول في 2024؟',
+    summary: 'دليل شامل للمقبلين على شراء العقار لأول مرة، نناقش فيه أهم المعايير من الموقع إلى التمويل.',
+    category: 'نصائح عقارية',
     date: '2024-05-15',
     image: 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=800'
   },
   {
     id: 'b2',
-    title: 'خطوات شراء عقارك الأول: دليل شامل للمبتدئين',
-    summary: 'كل ما تحتاج معرفته عن إجراءات الشراء، التمويل العقاري، والتحقق من جودة البناء.',
-    category: 'نصائح عقارية',
+    title: 'مستقبل العقار في المنطقة الشرقية',
+    summary: 'تحليل معمق للمشاريع الكبرى في الخبر والدمام وأثرها على أسعار الوحدات السكنية.',
+    category: 'أخبار السوق',
     date: '2024-05-10',
-    image: 'https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?auto=format&fit=crop&q=80&w=800'
+    image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800'
+  },
+  {
+    id: 'b3',
+    title: 'التمويل العقاري المدعوم: كل ما تحتاج معرفته',
+    summary: 'شرح مفصل لبرامج سكني والصندوق العقاري وكيفية الاستفادة منها لتخفيض تكلفة التملك.',
+    category: 'تمويل',
+    date: '2024-05-05',
+    image: 'https://images.unsplash.com/photo-1554224155-6726b3ff858f?auto=format&fit=crop&q=80&w=800'
   }
+];
+
+export const FINANCING_SOLUTIONS: FinancingSolution[] = [
+  {
+    id: 's1',
+    title: 'حلول الدفعة المقدمة',
+    icon: 'Wallet',
+    description: 'توفير حلول سيولة للدفعة المقدمة لتمكينك من حجز عقارك فوراً.',
+    details: ['بدون فوائد إضافية', 'تسهيلات سداد مرنة', 'متوافق مع الشريعة']
+  },
+  {
+    id: 's2',
+    title: 'حلول التعثر المالي',
+    icon: 'ShieldAlert',
+    description: 'معالجة التعثرات وإيقاف الخدمات لتحسين أهليتك الائتمانية لدى البنوك.',
+    details: ['سرية تامة', 'تسوية الديون الخارجية', 'رفع إيقاف الخدمات']
+  }
+];
+
+export const FAQ_ITEMS: FaqItem[] = [
+  { category: 'العقارات', question: 'ما هو نظام البيع على الخارطة؟', answer: 'هو بيع وحدات عقارية قبل أو أثناء مرحلة الإنشاء وفق ضوابط وافي.' },
+  { category: 'التمويل', question: 'هل تقبلون الدعم السكني؟', answer: 'نعم، جميع مشاريعنا متوافقة مع برامج الدعم السكني والصندوق العقاري.' }
 ];
 
 export const COMPANY_INFO = {

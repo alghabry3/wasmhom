@@ -1,9 +1,9 @@
-
 import { GoogleGenAI, Type } from "@google/genai";
 import { Project, QuizState, AdvisorResult } from "../types";
 import { MOCK_PROJECTS } from "../constants";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// Use process.env.API_KEY directly as per SDK requirements
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export async function getSmartRecommendations(state: QuizState): Promise<AdvisorResult> {
   const prompt = `
