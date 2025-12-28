@@ -3,7 +3,8 @@ import {
   MapPin, Building, Ruler, Calendar, CheckCircle, Info, Calculator, Download, 
   ChevronLeft, Star, Share2, Heart, Bookmark, ShieldCheck, Award, Construction, 
   FileCheck, Phone, MessageSquare, Car, Shield, Zap, Waves, Dumbbell, Trees, 
-  Store, ArrowUpCircle, Wifi, Wind, Coffee, Sparkles 
+  Store, ArrowUpCircle, Wifi, Wind, Coffee, Sparkles, 
+  ParkingCircle, ShieldAlert, Cpu, Video, GraduationCap, ShoppingBag, Eye, Sun, Route, Sofa, UserCheck
 } from 'lucide-react';
 import { Project, Unit } from '../types';
 import { MOCK_PROJECTS } from '../constants';
@@ -55,20 +56,39 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
     return Math.round((loanAmount * rate) / (1 - Math.pow(1 + rate, -n)));
   }, [loanAmount, years]);
 
-  // Helper to map feature strings to icons
+  // Helper to map feature strings to icons with more diverse and accurate representations
   const getFeatureIcon = (feature: string) => {
     const f = feature.toLowerCase();
-    if (f.includes('موقف') || f.includes('سيارة')) return <Car size={24} />;
-    if (f.includes('أمن') || f.includes('حراسة')) return <Shield size={24} />;
-    if (f.includes('ذكي') || f.includes('سمارت')) return <Zap size={24} />;
-    if (f.includes('مسبح')) return <Waves size={24} />;
-    if (f.includes('نادي') || f.includes('رياضي')) return <Dumbbell size={24} />;
-    if (f.includes('حديقة') || f.includes('خضراء')) return <Trees size={24} />;
-    if (f.includes('خدمات') || f.includes('سوق')) return <Store size={24} />;
-    if (f.includes('مصعد')) return <ArrowUpCircle size={24} />;
+    
+    // Parking
+    if (f.includes('موقف') || f.includes('سيارة') || f.includes('كراج')) return <ParkingCircle size={24} />;
+    
+    // Security
+    if (f.includes('أمن') || f.includes('حراسة') || f.includes('أمان')) return <ShieldCheck size={24} />;
+    if (f.includes('كاميرات') || f.includes('مراقبة')) return <Video size={24} />;
+    
+    // Smart Home / Technology
+    if (f.includes('ذكي') || f.includes('سمارت') || f.includes('تقني')) return <Cpu size={24} />;
     if (f.includes('واي فاي') || f.includes('انترنت')) return <Wifi size={24} />;
-    if (f.includes('تكييف')) return <Wind size={24} />;
-    if (f.includes('كافيه') || f.includes('مطبخ')) return <Coffee size={24} />;
+    
+    // Amenities
+    if (f.includes('مسبح')) return <Waves size={24} />;
+    if (f.includes('نادي') || f.includes('رياضي') || f.includes('جيم')) return <Dumbbell size={24} />;
+    if (f.includes('حديقة') || f.includes('خضراء') || f.includes('لاندسكيب')) return <Trees size={24} />;
+    if (f.includes('مصعد') || f.includes('أدوار')) return <ArrowUpCircle size={24} />;
+    
+    // Location / Proximity
+    if (f.includes('خدمات') || f.includes('سوق') || f.includes('تجاري')) return <ShoppingBag size={24} />;
+    if (f.includes('قريب') || f.includes('موقع') || f.includes('مركزي')) return <Route size={24} />;
+    if (f.includes('تعليم') || f.includes('مدرسة') || f.includes('جامعة')) return <GraduationCap size={24} />;
+    
+    // Interior / Quality
+    if (f.includes('إطلالة') || f.includes('نافذة')) return <Eye size={24} />;
+    if (f.includes('تكييف') || f.includes('مركزي')) return <Wind size={24} />;
+    if (f.includes('كافيه') || f.includes('مطبخ') || f.includes('طعام')) return <Coffee size={24} />;
+    if (f.includes('شرفة') || f.includes('بلكونة') || f.includes('خارجية')) return <Sun size={24} />;
+    if (f.includes('مجلس') || f.includes('صالة') || f.includes('استقبال')) return <Sofa size={24} />;
+    
     return <Sparkles size={24} />;
   };
 
@@ -199,18 +219,18 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
 
             {/* Amenities & Features */}
             {project.features && project.features.length > 0 && (
-              <section>
+              <section className="animate-in slide-in-from-bottom duration-700">
                 <h2 className="text-3xl font-black text-gray-900 mb-8 flex items-center gap-3">
                   <div className="w-2 h-8 bg-black rounded-full"></div>
                   المزايا والمرافق
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
                   {project.features.map((feature, idx) => (
-                    <div key={idx} className="flex flex-col items-center p-6 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-md transition-all text-center">
-                      <div className="p-4 bg-gray-50 text-black rounded-2xl mb-4">
+                    <div key={idx} className="flex flex-col items-center p-8 bg-white border border-gray-100 rounded-[2rem] shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 text-center group">
+                      <div className="p-5 bg-gray-50 text-gray-400 group-hover:bg-black group-hover:text-yellow-400 rounded-2xl mb-4 transition-colors duration-300">
                         {getFeatureIcon(feature)}
                       </div>
-                      <span className="text-sm font-bold text-gray-700">{feature}</span>
+                      <span className="text-sm font-black text-gray-800 group-hover:text-black">{feature}</span>
                     </div>
                   ))}
                 </div>
