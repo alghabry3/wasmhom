@@ -1,6 +1,10 @@
-
-import React, { useState, useMemo } from 'react';
-import { MapPin, Building, Ruler, Calendar, CheckCircle, Info, Calculator, Download, ChevronLeft, Star, Share2, Heart, ShieldCheck, Award, Construction, FileCheck, Phone, MessageSquare } from 'lucide-react';
+import React, { useState, useMemo, useEffect } from 'react';
+import { 
+  MapPin, Building, Ruler, Calendar, CheckCircle, Info, Calculator, Download, 
+  ChevronLeft, Star, Share2, Heart, Bookmark, ShieldCheck, Award, Construction, 
+  FileCheck, Phone, MessageSquare, Car, Shield, Zap, Waves, Dumbbell, Trees, 
+  Store, ArrowUpCircle, Wifi, Wind, Coffee, Sparkles 
+} from 'lucide-react';
 import { Project, Unit } from '../types';
 import { MOCK_PROJECTS } from '../constants';
 import Logo from '../components/Logo';
@@ -17,11 +21,56 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
   const [isLiked, setIsLiked] = useState(false);
   const [selectedUnit, setSelectedUnit] = useState<Unit | null>(null);
 
+  // Wishlist state persisted to localStorage
+  const [isSaved, setIsSaved] = useState(() => {
+    try {
+      const saved = localStorage.getItem('wasm_wishlist');
+      const list = saved ? JSON.parse(saved) : [];
+      return list.includes(projectId);
+    } catch (e) {
+      return false;
+    }
+  });
+
+  const toggleSave = () => {
+    try {
+      const saved = localStorage.getItem('wasm_wishlist');
+      let list = saved ? JSON.parse(saved) : [];
+      if (list.includes(projectId)) {
+        list = list.filter((id: string) => id !== projectId);
+        setIsSaved(false);
+      } else {
+        list.push(projectId);
+        setIsSaved(true);
+      }
+      localStorage.setItem('wasm_wishlist', JSON.stringify(list));
+    } catch (e) {
+      console.error("Failed to update wishlist", e);
+    }
+  };
+
   const monthlyPayment = useMemo(() => {
     const rate = 0.045 / 12;
     const n = years * 12;
     return Math.round((loanAmount * rate) / (1 - Math.pow(1 + rate, -n)));
   }, [loanAmount, years]);
+
+  // Helper to map feature strings to icons
+  const getFeatureIcon = (feature: string) => {
+    const f = feature.toLowerCase();
+    if (f.includes('موقف') || f.includes('سيارة')) return <Car size={24} />;
+    if (f.includes('أمن') || f.includes('حراسة')) return <Shield size={24} />;
+    if (f.includes('ذكي') || f.includes('سمارت')) return <Zap size={24} />;
+    if (f.includes('مسبح')) return <Waves size={24} />;
+    if (f.includes('نادي') || f.includes('رياضي')) return <Dumbbell size={24} />;
+    if (f.includes('حديقة') || f.includes('خضراء')) return <Trees size={24} />;
+    if (f.includes('خدمات') || f.includes('سوق')) return <Store size={24} />;
+    if (f.includes('مصعد')) return <ArrowUpCircle size={24} />;
+    if (f.includes('واي فاي') || f.includes('انترنت')) return <Wifi size={24} />;
+    if (f.includes('تكييف')) return <Wind size={24} />;
+    if (f.includes('كافيه') || f.includes('مطبخ')) return <Coffee size={24} />;
+    return <Sparkles size={24} />;
+  };
 
   if (!project) return (
     <div className="min-h-screen flex items-center justify-center">
@@ -81,9 +130,17 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
             <div className="flex gap-4 mb-4 md:mb-0">
                <button 
                 onClick={() => setIsLiked(!isLiked)}
+                title="أعجبني"
                 className={`p-4 rounded-2xl backdrop-blur-md transition-all ${isLiked ? 'bg-red-500 text-white' : 'bg-white/10 text-white border border-white/30 hover:bg-white/20'}`}
                >
                  <Heart size={24} className={isLiked ? 'fill-current' : ''} />
+               </button>
+               <button 
+                onClick={toggleSave}
+                title="حفظ"
+                className={`p-4 rounded-2xl backdrop-blur-md transition-all ${isSaved ? 'bg-yellow-500 text-black' : 'bg-white/10 text-white border border-white/30 hover:bg-white/20'}`}
+               >
+                 <Bookmark size={24} className={isSaved ? 'fill-current' : ''} />
                </button>
                <button className="p-4 rounded-2xl bg-white/10 backdrop-blur-md text-white border border-white/30 hover:bg-white/20 transition-all">
                  <Share2 size={24} />
@@ -139,6 +196,26 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
                  <span className="font-black text-lg">{project.developer}</span>
               </div>
             </section>
+
+            {/* Amenities & Features */}
+            {project.features && project.features.length > 0 && (
+              <section>
+                <h2 className="text-3xl font-black text-gray-900 mb-8 flex items-center gap-3">
+                  <div className="w-2 h-8 bg-black rounded-full"></div>
+                  المزايا والمرافق
+                </h2>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6">
+                  {project.features.map((feature, idx) => (
+                    <div key={idx} className="flex flex-col items-center p-6 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-md transition-all text-center">
+                      <div className="p-4 bg-gray-50 text-black rounded-2xl mb-4">
+                        {getFeatureIcon(feature)}
+                      </div>
+                      <span className="text-sm font-bold text-gray-700">{feature}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
             {/* Description */}
             <section>
@@ -234,7 +311,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
                         <input 
                           type="range" min="100000" max="10000000" step="50000" 
                           value={loanAmount} onChange={(e) => setLoanAmount(Number(e.target.value))}
-                          className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-black"
+                          className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-200 
+                                     [&::-webkit-slider-runnable-track]:bg-gradient-to-r [&::-webkit-slider-runnable-track]:from-gray-100 [&::-webkit-slider-runnable-track]:to-gray-300 [&::-webkit-slider-runnable-track]:rounded-lg
+                                     [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:shadow-xl [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:-mt-1.5 [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:hover:scale-110"
                         />
                       </div>
                       <div className="relative">
@@ -245,7 +324,9 @@ const ProjectDetails: React.FC<ProjectDetailsProps> = ({ projectId, onNavigate }
                         <input 
                           type="range" min="5" max="30" step="1" 
                           value={years} onChange={(e) => setYears(Number(e.target.value))}
-                          className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer accent-black"
+                          className="w-full h-2 rounded-lg appearance-none cursor-pointer bg-gray-200 
+                                     [&::-webkit-slider-runnable-track]:bg-gradient-to-r [&::-webkit-slider-runnable-track]:from-gray-100 [&::-webkit-slider-runnable-track]:to-gray-300 [&::-webkit-slider-runnable-track]:rounded-lg
+                                     [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-black [&::-webkit-slider-thumb]:shadow-xl [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-white [&::-webkit-slider-thumb]:-mt-1.5 [&::-webkit-slider-thumb]:transition-all [&::-webkit-slider-thumb]:hover:scale-110"
                         />
                       </div>
                    </div>

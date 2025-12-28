@@ -24,7 +24,7 @@ export interface Project {
   priceFrom: number;
   type: 'شقة' | 'فيلا' | 'دوبلكس' | 'تاون هاوس' | 'متعدد' | 'تجاري';
   status: 'جاهز' | 'على الخارطة' | 'استثماري' | 'مكتمل';
-  progress?: number; // نسبة الإنجاز للمشاريع تحت الإنشاء (وافي)
+  progress?: number;
   rooms: number;
   area: number;
   developer: string;
@@ -37,6 +37,7 @@ export interface Project {
   units?: Unit[];
   paymentPlans?: { title: string; details: string }[];
   wafiCertified?: boolean;
+  features?: string[];
 }
 
 export interface BlogPost {
@@ -49,35 +50,6 @@ export interface BlogPost {
   content?: string;
 }
 
-export interface FaqItem {
-  id: string;
-  question: string;
-  answer: string;
-  category: 'العقارات' | 'التمويل' | 'الاستثمار' | 'إجراءات';
-}
-
-export interface FinancingSolution {
-  id: string;
-  title: string;
-  description: string;
-  icon: string;
-  details: string[];
-  type: 'mortgage' | 'distress' | 'sakani' | 'downpayment';
-}
-
-export interface AdvisorResult {
-  projects: Project[];
-  reason: string;
-}
-
-export interface QuizState {
-  purpose: 'سكن' | 'استثمار' | '';
-  city: string;
-  budget: string;
-  financing: boolean;
-  propertyType?: string;
-}
-
 export interface Lead {
   id: string;
   name: string;
@@ -87,4 +59,45 @@ export interface Lead {
   status: 'new' | 'contacted' | 'negotiating' | 'closed' | 'lost';
   odooId?: string;
   createdAt: string;
+}
+
+export interface AdminUser {
+  id: string;
+  name: string;
+  email: string;
+  role: 'super_admin' | 'manager' | 'editor';
+  status: 'active' | 'inactive';
+  lastLogin: string;
+  permissions: string[];
+}
+
+// Added missing types for FAQ section
+export interface FaqItem {
+  id: string;
+  category: string;
+  question: string;
+  answer: string;
+}
+
+// Added missing types for Financing section
+export interface FinancingSolution {
+  id: string;
+  title: string;
+  icon: string;
+  type: 'mortgage' | 'downpayment' | 'distress' | 'sakani';
+  description: string;
+  details: string[];
+}
+
+// Added missing types for AI Smart Advisor
+export interface QuizState {
+  purpose: string;
+  city: string;
+  budget: string;
+  financing: boolean;
+}
+
+export interface AdvisorResult {
+  projects: Project[];
+  reason: string;
 }

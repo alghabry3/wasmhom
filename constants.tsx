@@ -18,6 +18,7 @@ export const MOCK_PROJECTS: Project[] = [
     description: 'مشروع عصري في الخبر يوفر وحدات سكنية جاهزة للسكن المباشر مع ضمانات هيكلية وكهربائية شاملة.',
     roiEstimate: 7.5,
     wafiCertified: false,
+    features: ['مواقف خاصة', 'نظام أمني 24/7', 'نظام سمارت هوم', 'قريب من الخدمات'],
     units: [
       { id: 'u1', projectId: 'p1', unitNumber: '101', type: 'شقة', area: 160, price: 650000, status: 'available', rooms: 3, bathrooms: 2 },
       { id: 'u2', projectId: 'p1', unitNumber: '102', type: 'شقة', area: 180, price: 720000, status: 'reserved', rooms: 4, bathrooms: 3 }
@@ -41,6 +42,7 @@ export const MOCK_PROJECTS: Project[] = [
     description: 'مشروع مرخص بنظام البيع على الخارطة (وافي)، يوفر فلل سكنية بتصاميم عصرية ومساحات خضراء خاصة في أرقى أحياء شمال الرياض.',
     roiEstimate: 5.2,
     wafiCertified: true,
+    features: ['مسبح خاص', 'مساحات خضراء', 'غرفة خادمة', 'تكييف مركزي', 'موقف لسيارتين'],
     paymentPlans: [
       { title: 'دفعة أولى 10%', details: '10% عند الحجز، 10% عند اكتمال الهيكل الإنشائي، الباقي عند التسليم' },
       { title: 'تمويل مرابحة', details: 'متوافق مع جميع البنوك السعودية ببرنامج القرض المدعوم' }
@@ -60,7 +62,8 @@ export const MOCK_PROJECTS: Project[] = [
     developer: 'وسم هوم العقارية',
     image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=800',
     description: 'مكاتب تجارية فاخرة وصالات عرض في موقع استراتيجي على طريق الملك فهد بالخبر، مثالي للشركات الراغبة في التوسع.',
-    roiEstimate: 9.2
+    roiEstimate: 9.2,
+    features: ['واجهات زجاجية', '6 مصاعد ذكية', 'قاعات اجتماعات', 'مواقف قبو']
   }
 ];
 
