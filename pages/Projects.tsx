@@ -1,6 +1,6 @@
 
 import React, { useState, useMemo } from 'react';
-import { Building2, MapPin, Construction, Gem, Filter, X, ChevronDown, Check } from 'lucide-react';
+import { Building2, MapPin, Construction, Gem, Filter, X, ChevronDown, Check, Globe } from 'lucide-react';
 import { Project } from '../types';
 import ProjectCard from '../components/ProjectCard';
 
@@ -12,12 +12,19 @@ interface ProjectsProps {
 const Projects: React.FC<ProjectsProps> = ({ onNavigate, projects }) => {
   const [activeTab, setActiveTab] = useState<'all' | 'ready' | 'construction' | 'investment'>('all');
   const [selectedDevelopers, setSelectedDevelopers] = useState<string[]>([]);
+  const [selectedCities, setSelectedCities] = useState<string[]>([]);
   const [showMobileFilters, setShowMobileFilters] = useState(false);
 
   // Extract unique developers
   const developers = useMemo(() => {
     const devs = projects.map(p => p.developer);
     return Array.from(new Set(devs)).sort();
+  }, [projects]);
+
+  // Extract unique cities
+  const cities = useMemo(() => {
+    const cts = projects.map(p => p.city);
+    return Array.from(new Set(cts)).sort();
   }, [projects]);
 
   const filteredProjects = useMemo(() => {
@@ -34,9 +41,14 @@ const Projects: React.FC<ProjectsProps> = ({ onNavigate, projects }) => {
         selectedDevelopers.length === 0 || 
         selectedDevelopers.includes(p.developer);
 
-      return matchesStatus && matchesDeveloper;
+      // City filtering
+      const matchesCity = 
+        selectedCities.length === 0 || 
+        selectedCities.includes(p.city);
+
+      return matchesStatus && matchesDeveloper && matchesCity;
     });
-  }, [projects, activeTab, selectedDevelopers]);
+  }, [projects, activeTab, selectedDevelopers, selectedCities]);
 
   const toggleDeveloper = (dev: string) => {
     setSelectedDevelopers(prev => 
@@ -44,10 +56,19 @@ const Projects: React.FC<ProjectsProps> = ({ onNavigate, projects }) => {
     );
   };
 
+  const toggleCity = (city: string) => {
+    setSelectedCities(prev => 
+      prev.includes(city) ? prev.filter(c => c !== city) : [...prev, city]
+    );
+  };
+
   const clearFilters = () => {
     setSelectedDevelopers([]);
+    setSelectedCities([]);
     setActiveTab('all');
   };
+
+  const totalActiveFilters = selectedDevelopers.length + selectedCities.length + (activeTab !== 'all' ? 1 : 0);
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -64,28 +85,59 @@ const Projects: React.FC<ProjectsProps> = ({ onNavigate, projects }) => {
           >
             <Filter size={18} />
             تصفية النتائج
-            {selectedDevelopers.length > 0 && <span className="bg-black text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center">{selectedDevelopers.length}</span>}
+            {totalActiveFilters > 0 && (
+              <span className="bg-black text-white w-5 h-5 rounded-full text-[10px] flex items-center justify-center">
+                {totalActiveFilters}
+              </span>
+            )}
           </button>
         </header>
 
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Desktop Sidebar Filter */}
           <aside className="hidden lg:block w-72 shrink-0 space-y-8">
-            <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm sticky top-28">
+            <div className="bg-white p-8 rounded-[2rem] border border-gray-100 shadow-sm sticky top-28 max-h-[calc(100vh-140px)] overflow-y-auto custom-scrollbar">
               <div className="flex items-center justify-between mb-8">
                 <h3 className="font-black text-xl flex items-center gap-2">
                   <Filter size={20} />
                   تصفية
                 </h3>
-                {(selectedDevelopers.length > 0 || activeTab !== 'all') && (
+                {(selectedDevelopers.length > 0 || selectedCities.length > 0 || activeTab !== 'all') && (
                   <button onClick={clearFilters} className="text-xs text-gray-400 hover:text-black font-bold">مسح الكل</button>
                 )}
+              </div>
+
+              {/* City Filter */}
+              <div className="mb-10">
+                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                  <Globe size={12} /> المدينة
+                </h4>
+                <div className="space-y-3">
+                  {cities.map(city => (
+                    <label key={city} className="flex items-center gap-3 cursor-pointer group">
+                      <div className="relative flex items-center justify-center">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedCities.includes(city)}
+                          onChange={() => toggleCity(city)}
+                          className="appearance-none w-5 h-5 rounded-lg border-2 border-gray-200 checked:bg-black checked:border-black transition-all cursor-pointer"
+                        />
+                        {selectedCities.includes(city) && <Check size={12} className="absolute text-white" />}
+                      </div>
+                      <span className={`text-sm font-bold transition-colors ${selectedCities.includes(city) ? 'text-black' : 'text-gray-500 group-hover:text-black'}`}>
+                        {city}
+                      </span>
+                    </label>
+                  ))}
+                </div>
               </div>
 
               {/* Developer Filter */}
               <div className="space-y-6">
                 <div>
-                  <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">المطور العقاري</h4>
+                  <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                    <Building2 size={12} /> المطور العقاري
+                  </h4>
                   <div className="space-y-3">
                     {developers.map(dev => (
                       <label key={dev} className="flex items-center gap-3 cursor-pointer group">
@@ -155,7 +207,7 @@ const Projects: React.FC<ProjectsProps> = ({ onNavigate, projects }) => {
       {/* Mobile Filter Drawer Overlay */}
       {showMobileFilters && (
         <div className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm lg:hidden flex justify-end animate-in fade-in duration-300">
-          <div className="w-80 bg-white h-full shadow-2xl p-8 animate-in slide-in-from-right duration-500">
+          <div className="w-80 bg-white h-full shadow-2xl p-8 animate-in slide-in-from-right duration-500 overflow-y-auto">
             <div className="flex items-center justify-between mb-10">
               <h3 className="font-black text-2xl">تصفية النتائج</h3>
               <button onClick={() => setShowMobileFilters(false)} className="p-2 hover:bg-gray-100 rounded-full transition-all">
@@ -164,8 +216,36 @@ const Projects: React.FC<ProjectsProps> = ({ onNavigate, projects }) => {
             </div>
 
             <div className="space-y-10">
+              {/* Mobile City Filter */}
               <div>
-                <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-6">المطور العقاري</h4>
+                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                  <Globe size={14} /> المدينة
+                </h4>
+                <div className="space-y-4">
+                  {cities.map(city => (
+                    <label key={city} className="flex items-center gap-4 cursor-pointer group">
+                      <div className="relative flex items-center justify-center">
+                        <input 
+                          type="checkbox" 
+                          checked={selectedCities.includes(city)}
+                          onChange={() => toggleCity(city)}
+                          className="appearance-none w-6 h-6 rounded-lg border-2 border-gray-200 checked:bg-black checked:border-black transition-all cursor-pointer"
+                        />
+                        {selectedCities.includes(city) && <Check size={14} className="absolute text-white" />}
+                      </div>
+                      <span className={`text-lg font-bold transition-colors ${selectedCities.includes(city) ? 'text-black' : 'text-gray-500'}`}>
+                        {city}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Mobile Developer Filter */}
+              <div>
+                <h4 className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                  <Building2 size={14} /> المطور العقاري
+                </h4>
                 <div className="space-y-4">
                   {developers.map(dev => (
                     <label key={dev} className="flex items-center gap-4 cursor-pointer group">
